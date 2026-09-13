@@ -108,6 +108,22 @@ function ligarBotoes() {
   });
 
   el.resetButton.addEventListener("click", () => {
+    if (sfx.final) {
+      sfx.final.pause();
+      sfx.final.currentTime = 0;
+    }
+
+    if (audioLigado) {
+      bgm.currentTime = 0;
+      bgm.volume = 0.35;
+      const tentarTocar = bgm.play();
+      if (tentarTocar && tentarTocar.catch) {
+        tentarTocar.catch((e) =>
+          console.warn("nao foi possivel retomar o bgm:", e),
+        );
+      }
+    }
+
     reiniciarAutomato();
     limparDestaques();
     atualizarTela(estadoAtual());
@@ -171,7 +187,15 @@ function clicarFicha(valor) {
   mostrarFeedback("");
 
   if (novoEstado.final) {
-    tocarSom("final");
+    // Toca o som de sucesso ao atingir 30¢
+    tocarSom("success");
+
+    // Um instante depois, pausa o bgm e toca o som final
+    setTimeout(() => {
+      bgm.pause();
+      tocarSom("final");
+    }, 280);
+
     el.resetButton.hidden = false;
     el.scenePanel.classList.add("scene-final-flash", "scene-final-shake");
     setTimeout(
@@ -183,8 +207,6 @@ function clicarFicha(valor) {
       700,
     );
     setTimeout(mostrarCachorroAleatorio, 320);
-  } else {
-    tocarSom("success");
   }
 }
 
