@@ -255,8 +255,18 @@ function destacarTransicao(fromId, toId) {
   marcarEstadoAtual();
   limparDestaques(false);
 
+  for (const chave in elementosAresta) {
+    const aresta = elementosAresta[chave];
+    aresta.path.classList.remove("edge-pulse");
+    aresta.label.classList.remove("edge-label-pulse");
+  }
+
   const aresta = elementosAresta[fromId + "->" + toId];
   if (aresta) {
+    aresta.path.classList.remove("edge-pulse");
+    aresta.label.classList.remove("edge-label-pulse");
+    void aresta.path.getBoundingClientRect();
+
     aresta.path.classList.add("edge-pulse", "edge-current");
     aresta.label.classList.add("edge-label-pulse", "edge-label-current");
     animarGarra(aresta.path);
