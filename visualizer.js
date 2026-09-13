@@ -303,8 +303,8 @@ function animarGarra(pathEl) {
     const imagem = criarSVG("image", {
       x: -32,
       y: -16,
-      width: 48,
-      height: 32,
+      width: 68,
+      height: 42,
       class: "claw-img",
       href: "assets/images/garra.png",
     });
