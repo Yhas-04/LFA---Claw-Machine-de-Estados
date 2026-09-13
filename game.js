@@ -187,10 +187,8 @@ function clicarFicha(valor) {
   mostrarFeedback("");
 
   if (novoEstado.final) {
-    // Toca o som de sucesso ao atingir 30¢
     tocarSom("success");
 
-    // Um instante depois, pausa o bgm e toca o som final
     setTimeout(() => {
       bgm.pause();
       tocarSom("final");
