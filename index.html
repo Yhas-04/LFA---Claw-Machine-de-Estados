@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jogo — máquina de estados (JFLAP)</title>
+  <meta name="description" content="Um micro-jogo de máquina de fichas cuja lógica é controlada por um autômato finito exportado do JFLAP, com imagens de cachorros da Dog API." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/mona-sans/index.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="game-fullscreen" id="scene">
+    <img id="scene-image" class="scene-bg" src="assets/images/bg-q0.svg" alt="Cena atual do jogo (template — substitua pela sua imagem de fundo)" />
+    <div class="scene-vignette"></div>
+
+    <!-- Popup com imagem aleatória da Dog API -->
+    <div class="dog-popup" id="dog-popup" aria-hidden="true">
+      <div class="dog-popup-frame">
+        <img id="dog-popup-img" alt="Foto aleatória de cachorro (Dog CEO API)" />
+      </div>
+    </div>
+
+    <div class="hud-topright" aria-hidden="true">
+      <div class="hud-row"><span class="hud-label">Time:</span> <span id="hud-time">12:00am</span></div>
+      <div class="hud-row"><span class="hud-label">Date:</span> <span id="hud-date">13/09/86</span></div>
+      <div class="hud-row"><span class="hud-label">Day:</span> <span id="hud-day">Domingo</span></div>
+    </div>
+
+    <!-- Janela da máquina de estados -->
+    <aside class="win95-window automaton-window floating-window" aria-label="Visualização da máquina de estados">
+      <div class="win95-titlebar">
+        <span class="win95-title">
+          <span class="win95-title-icon">◈</span> MAQUINA_DE_ESTADOS
+        </span>
+        <span class="win95-controls">
+          <button class="win95-btn" type="button" aria-label="Minimizar" tabindex="-1">_</button>
+          <button class="win95-btn win95-btn-close" type="button" aria-label="Fechar" tabindex="-1">×</button>
+        </span>
+      </div>
+
+      <div class="win95-body automaton-body">
+        <div class="automaton-svg-wrap" id="automaton-wrap" aria-live="polite"></div>
+        <ul class="legend">
+          <li><span class="legend-dot legend-initial"></span> inicial</li>
+          <li><span class="legend-dot legend-final"></span> final</li>
+          <li><span class="legend-dot legend-current"></span> atual</li>
+        </ul>
+      </div>
+
+      <div class="win95-statusbar automaton-statusbar">
+        <span id="status-state">estado: —</span>
+        <span id="status-coins">valor: —</span>
+    </aside>
+
+    <div class="controls-bar" role="group" aria-label="Inserir ficha">
+      <div class="coin-slot">
+        <button class="coin-btn" data-value="5"><span class="led"></span>5¢</button>
+        <img class="coin-lever" src="assets/images/manche-5.png" alt="" aria-hidden="true" />
+      </div>
+      <div class="coin-slot">
+        <button class="coin-btn" data-value="10"><span class="led"></span>10¢</button>
+        <img class="coin-lever" src="assets/images/manche-10.png" alt="" aria-hidden="true" />
+      </div>
+      <div class="coin-slot">
+        <button class="coin-btn" data-value="25"><span class="led"></span>25¢</button>
+        <img class="coin-lever" src="assets/images/manche-25.png" alt="" aria-hidden="true" />
+      </div>
+      <button class="reset-btn" id="reset-btn" hidden>↻ reiniciar</button>
+      <span class="feedback" id="feedback" aria-live="polite"></span>
+    </div>
+
+    <div class="dialogue-area">
+      <div class="speaker-tag"><span id="dialog-title">MÁQUINA</span></div>
+      <div class="dialogue-box">
+        <p id="dialog-text">Carregando...</p>
+        <div class="dialogue-continue" aria-hidden="true">▼</div>
+      </div>
+    </div>
+
+    <p class="load-error" id="load-error" role="alert" hidden></p>
+
+    <div class="start-overlay" id="start-overlay">
+      <div class="win95-window dialog-window">
+        <div class="win95-titlebar">
+          <span class="win95-title"><span class="win95-title-icon">!</span> SISTEMA</span>
+          <span class="win95-controls">
+            <button class="win95-btn win95-btn-close" type="button" aria-label="Fechar" tabindex="-1">×</button>
+          </span>
+        </div>
+        <div class="win95-body dialog-window-body">
+          <p class="dialog-window-icon">⚠</p>
+          <div>
+            <h2>Pronto para o turno?</h2>
+            <p>Insira fichas na máquina até completar 30¢ para liberar o PRÊMIO!!.</p>
+            <button id="start-btn" class="win95-button primary">Iniciar turno</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <button id="mute-btn" class="win95-button mute-btn" aria-label="Desativar som" title="Ativar/desativar som">♪</button>
+
+  <!-- áudio -->
+  <audio id="bgm" src="assets/audio/bgm.mp3" loop preload="auto"></audio>
+  <audio id="sfx-coin" src="assets/audio/coin.mp3" preload="auto"></audio>
+  <audio id="sfx-success" src="assets/audio/success.mp3" preload="auto"></audio>
+  <audio id="sfx-error" src="assets/audio/error.mp3" preload="auto"></audio>
+  <audio id="sfx-final" src="assets/audio/final.mp3" preload="auto"></audio>
+
+  <script src="automaton.js"></script>
+
+</body>
+</html>
